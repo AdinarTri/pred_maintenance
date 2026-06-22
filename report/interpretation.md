@@ -1,40 +1,36 @@
 # Interpretasi Hasil — Predictive Maintenance (BAB 4)
 
 ## 1. Ringkasan Dataset
-- Jumlah observasi (event downtime): **1716**
-- Jumlah fitur model: **12**
-- Failure (kegagalan berdampak besar): **430** (25.1%)
-- Non-failure: **1286** (74.9%)
-- Definisi target: **Severity P75** — event dengan `Total DT Hours >= 21.8 jam` dianggap kegagalan berdampak besar.
+- Unit analisis: **equipment-level monthly** (komponen sebagai proxy unit) — **78** observasi (komponen × bulan), 8 bulan (Jan–Agu 2025).
+- Prediktor (konteks operasional): **12** | Failure (MTBF<median): **39** (50.0%), Non-failure: **39**.
 
-> Catatan struktur data: kolom `Date` dan `DT Cost` berupa *merged cells* sehingga sel kosong diisi mengikuti nilai di atasnya (*forward-fill*). Dataset asli juga tidak memiliki label kegagalan eksplisit (semua baris berstatus *Unplanned Down*); target dibentuk dari severity downtime. Pendekatan alternatif (rasio downtime & agregasi komponen) telah diuji; agregasi-komponen ditolak karena *data leakage*.
+## 2. Maintenance KPI (BAB 3.3.3)
+Dihitung per komponen-bulan: **MTBF** (jam), **Availability** (rasio), **Downtime Rate** (rasio). Lihat `outputs/kpi_panel.csv`.
 
-## 2. Hasil Logistic Regression (Model Utama)
+## 3. Logistic Regression (Model Utama)
 | Metrik | Nilai |
 |--------|-------|
-| Accuracy | 0.601 |
-| Precision | 0.328 |
-| Recall | 0.570 |
-| F1 Score | 0.416 |
-| ROC-AUC | 0.652 |
+| Accuracy | 0.750 |
+| Precision | 0.692 |
+| Recall | 0.900 |
+| F1 | 0.783 |
+| ROC-AUC | 0.890 |
+| CV-5 ROC-AUC | 0.857 (±0.139) |
 
-## 3. Perbandingan Model
+## 4. Proposisi Analitis 1 — Korelasi Pearson FRS vs KPI
+| KPI | r | p-value | Signifikan | Arah |
+|-----|---|---------|-----------|------|
+| MTBF | -0.628 | 7.5e-10 | Ya | negatif |
+| Availability | -0.783 | 2.4e-17 | Ya | negatif |
+| Downtime Rate | +0.716 | 1.7e-13 | Ya | positif |
+
+**Kesimpulan:** seluruh korelasi signifikan (p<0,05) dengan arah konsisten teoretis → **Proposisi 1 didukung**. FRS valid sebagai indikator prediktif keandalan.
+
+## 5. Perbandingan Model
 | Model | Accuracy | Precision | Recall | F1 | ROC-AUC |
 |-------|----------|-----------|--------|----|---------|
-| Logistic Regression (utama) | 0.601 | 0.328 | 0.570 | 0.416 | 0.652 |
-| Random Forest (pembanding) | 0.674 | 0.388 | 0.533 | 0.449 | 0.671 |
+| Logistic Regression (utama) | 0.750 | 0.692 | 0.900 | 0.783 | 0.890 |
+| Random Forest (pembanding) | 0.800 | 0.750 | 0.900 | 0.818 | 0.865 |
 
-- Model terbaik berdasarkan ROC-AUC: **Random Forest (Pembanding)**
-- Model terbaik berdasarkan Recall: **Logistic Regression (Utama)**
-- Model paling interpretable: **Logistic Regression**
-
-## 4. Interpretasi Failure Risk Score
-FRS = probabilitas kegagalan × 100 (skala 0–100). Klasifikasi risiko: **Kritis** (≥70), **Tinggi** (50–70), **Sedang** (30–50), **Rendah** (<30). Peralatan dengan FRS tertinggi diprioritaskan untuk inspeksi/penggantian.
-
-## 5. Faktor Penyebab & Rekomendasi Maintenance
-- **Meningkatkan risiko**: periode operasi lanjut (`month_idx`), komponen **Tire/Wheel** & **Electrical/Lamp**.
-- **Menurunkan risiko**: komponen **Engine/Fuel** & **Driveline/Transmission** (umumnya downtime singkat).
-- **Rekomendasi**: jadwalkan preventive maintenance berbasis-risiko, fokus pada ban/roda & kelistrikan, dan tingkatkan inspeksi menjelang akhir periode operasi.
-
-## 6. Catatan Tesis (Kesesuaian Metodologi)
-Logistic Regression berhasil ditetapkan sebagai **model utama** penghasil Failure Risk Score sesuai metodologi penelitian. Random Forest sebagai pembanding memberikan hasil yang **searah**, memperkuat validitas temuan. Metrik bersifat moderat karena dataset merupakan *log downtime* dengan fitur prediktif terbatas; penambahan data telemetri sensor (jam operasi mesin, beban, suhu, getaran) direkomendasikan untuk meningkatkan akurasi pada penelitian lanjutan.
+## 6. Kesesuaian Metodologi (Thesis Notes)
+Pemodelan mengikuti BAB 3: KPI keandalan dihitung di level equipment-bulanan, Logistic Regression menghasilkan Failure Risk Score, divalidasi train-test split + metrik confusion matrix, dan Proposisi Analitis 1 diuji dengan korelasi Pearson. **Logistic Regression tetap model utama**; Random Forest hanya pembanding. Keterbatasan utama: tidak ada ID unit & telemetri sensor, panel kecil, serta indikator nilai operasional (Proposisi 2) belum tersedia — direkomendasikan untuk penelitian lanjutan.
