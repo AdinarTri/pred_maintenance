@@ -1,0 +1,10 @@
+KPI,Nilai_Operasional,pearson_r,p_value,signifikan(α=0.05)
+MTBF,Downtime Cost,0.179,0.00525713069101473,Ya
+MTBF,Production Loss,-0.738,1.0513513182923913e-42,Ya
+MTBF,Budget Variance,-0.094,0.14765603767875474,Tidak
+Availability,Downtime Cost,0.179,0.00525713069101473,Ya
+Availability,Production Loss,-0.738,1.0513513182923913e-42,Ya
+Availability,Budget Variance,-0.094,0.14765603767875474,Tidak
+Downtime_Rate,Downtime Cost,-0.179,0.00525713069101473,Ya
+Downtime_Rate,Production Loss,0.738,1.0513513182923913e-42,Ya
+Downtime_Rate,Budget Variance,0.094,0.14765603767875474,Tidak

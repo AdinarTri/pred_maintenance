@@ -1,4 +1,0 @@
-KPI,pearson_r,p_value,signifikan(α=0.05),arah
-MTBF,-0.628,7.503630249679958e-10,Ya,negatif
-Availability,-0.783,2.4095658102062195e-17,Ya,negatif
-Downtime_Rate,0.716,1.6898509934296903e-13,Ya,positif
