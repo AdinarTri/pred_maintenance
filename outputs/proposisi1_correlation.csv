@@ -1,0 +1,4 @@
+KPI,r_Pearson,p_value,Signifikan(α=0.05),n
+MTBF,-0.646,0.0,Ya,78
+Availability,-0.773,0.0,Ya,78
+Downtime_Rate,0.705,0.0,Ya,78
