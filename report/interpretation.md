@@ -20,11 +20,11 @@ Dihitung per komponen-bulan: MTBF (jam), Availability, Downtime Rate. Lihat `out
 ## 4. Proposisi Analitis 1 — Korelasi Pearson FRS vs Maintenance KPI (level panel komponen-bulan, n=78)
 | Maintenance KPI | r (vs FRS) | p-value | Signifikan |
 |-----------------|-----------|---------|-----------|
-| MTBF | −0.646 | 0.000 | Ya |
-| Availability | −0.773 | 0.000 | Ya |
-| Downtime Rate | +0.705 | 0.000 | Ya |
+| MTBF | -0.646 | 0 | Ya |
+| Availability | -0.773 | 0 | Ya |
+| Downtime Rate | +0.705 | 0 | Ya |
 
-**Kesimpulan:** Proposisi 1 **didukung** — FRS berasosiasi negatif & signifikan dengan MTBF dan Availability (risiko naik saat keandalan turun) serta positif dengan Downtime Rate. *Catatan metodologis:* label *failure* diturunkan dari ambang MTBF, sehingga hubungan FRS–MTBF **sebagian bersifat by-construction**; r=−0.646 (bukan ≈−1) karena FRS dihasilkan LogReg multi-fitur (komponen, bulan, cost), bukan MTBF murni. Hasil dibaca sebagai **konfirmasi konsistensi internal** FRS terhadap KPI keandalan, bukan klaim prediktif independen. Lihat `outputs/proposisi1_correlation.csv` & `outputs/proposisi1_scatter.png`.
+**Kesimpulan:** Proposisi 1 **didukung** — FRS berasosiasi negatif & signifikan dengan MTBF dan Availability, positif dengan Downtime Rate. *Catatan:* label *failure* diturunkan dari ambang MTBF, sehingga FRS–MTBF sebagian *by-construction*; dibaca sebagai konfirmasi konsistensi internal FRS terhadap KPI keandalan. Lihat `outputs/proposisi1_correlation.csv` & `outputs/proposisi1_scatter.png`.
 
 ## 5. Proposisi Analitis 2 — Korelasi Pearson KPI vs Nilai Operasional (level blok harian, n=241)
 | Indikator Nilai | r (vs Downtime Rate) | p-value | Signifikan |
@@ -39,7 +39,8 @@ Dihitung per komponen-bulan: MTBF (jam), Availability, Downtime Rate. Lihat `out
 | Model | Accuracy | Precision | Recall | F1 | ROC-AUC |
 |-------|----------|-----------|--------|----|---------|
 | Logistic Regression (utama) | 0.800 | 0.800 | 0.800 | 0.800 | 0.850 |
+| Decision Tree (pembanding) | 0.850 | 0.818 | 0.900 | 0.857 | 0.815 |
 | Random Forest (pembanding) | 0.850 | 0.818 | 0.900 | 0.857 | 0.885 |
 
 ## 7. Kesesuaian Metodologi (Thesis Notes)
-Pemodelan mengikuti BAB 3: KPI keandalan di level equipment-bulanan, Logistic Regression menghasilkan Failure Risk Score, divalidasi train-test split + metrik confusion matrix, **Proposisi Analitis 1** diuji dengan korelasi Pearson FRS ↔ KPI keandalan (level panel), dan **Proposisi Analitis 2** diuji dengan korelasi Pearson KPI ↔ indikator nilai operasional (level blok harian). Logistic Regression tetap model utama; Random Forest pembanding. Keterbatasan: tanpa ID unit & label asli & telemetri; Proposisi 2 di level blok harian; Budget Variance terkonsentrasi Jul–Agu.
+Pemodelan mengikuti BAB 3: KPI keandalan di level equipment-bulanan, Logistic Regression menghasilkan Failure Risk Score, divalidasi train-test split + metrik confusion matrix, dan **Proposisi Analitis 2** diuji dengan korelasi Pearson KPI ↔ indikator nilai operasional. Logistic Regression tetap model utama; Decision Tree & Random Forest sebagai pembanding. Keterbatasan: tanpa ID unit & label asli & telemetri; Proposisi 2 di level blok harian; Budget Variance terkonsentrasi Jul–Agu.
